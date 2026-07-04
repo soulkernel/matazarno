@@ -1,8 +1,8 @@
-﻿const CONFIG = {
+const CONFIG = {
   username: "admin",
   password: "MatazarnoS",
   authKey: "arriendo-form-auth",
-  appScriptUrl: "",
+  appScriptUrl: "https://script.google.com/macros/s/AKfycbyTaQX2vcFUL1_uc83RhjuQgW4i7mzLmmFbunb2H7lWcxl__AUxOOodmHdsL1xLz3R2/exec",
   contractStart: "2026-02-01",
   contractMonths: 24,
   monthlyRent: 150,
@@ -18,9 +18,9 @@ const state = {
       receiptNumber: "8729228",
       amount: 150,
       coveredMonths: ["2026-03"],
-      receiptUrl: "",
+      receiptUrl: "Comprobantes%20Pagos/2026-03-20%20at%203.19.16%20PM.jpeg",
       monthReceipts: {
-        "2026-03": ""
+        "2026-03": "Comprobantes%20Pagos/2026-03-20%20at%203.19.16%20PM.jpeg"
       },
       note: ""
     },
@@ -30,10 +30,10 @@ const state = {
       receiptNumber: "3630119",
       amount: 300,
       coveredMonths: ["2026-02", "2026-04"],
-      receiptUrl: "",
+      receiptUrl: "Comprobantes%20Pagos/2026-05-06%20at%203.48.01%20PM.jpeg",
       monthReceipts: {
-        "2026-02": "",
-        "2026-04": ""
+        "2026-02": "Comprobantes%20Pagos/2026-05-06%20at%203.48.01%20PM.jpeg",
+        "2026-04": "Comprobantes%20Pagos/2026-05-06%20at%203.48.01%20PM.jpeg"
       },
       note: "Pago aplicado a meses vencidos."
     },
@@ -43,10 +43,10 @@ const state = {
       receiptNumber: "9609690",
       amount: 300,
       coveredMonths: ["2026-05", "2026-06"],
-      receiptUrl: "",
+      receiptUrl: "Comprobantes%20Pagos/2026-07-03%20at%2010.34.07%20AM.jpeg",
       monthReceipts: {
-        "2026-05": "",
-        "2026-06": ""
+        "2026-05": "Comprobantes%20Pagos/2026-07-03%20at%2010.34.07%20AM.jpeg",
+        "2026-06": "Comprobantes%20Pagos/2026-07-03%20at%2010.34.07%20AM.jpeg"
       },
       note: "Pago aplicado a meses vencidos."
     }
@@ -729,4 +729,3 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
-

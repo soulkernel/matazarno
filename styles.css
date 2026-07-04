@@ -428,6 +428,20 @@ button.badge:hover {
   padding: 14px;
 }
 
+.inline-check {
+  align-items: center;
+  color: var(--ink);
+  display: flex;
+  font-size: 0.9rem;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.inline-check input {
+  min-height: auto;
+  width: auto;
+}
+
 .month-receipt-grid {
   display: grid;
   gap: 12px;

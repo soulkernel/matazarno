@@ -69,6 +69,7 @@ document.querySelector("#refreshButton").addEventListener("click", loadData);
 document.querySelector("#downloadHistoryPdfButton").addEventListener("click", downloadPaymentsPdf);
 document.querySelector("#downloadHistoryCsvButton").addEventListener("click", downloadPaymentsCsv);
 document.querySelector("#coveredMonths").addEventListener("change", renderMonthReceiptAssignments);
+document.querySelector("#useMainReceiptForMonths").addEventListener("change", renderMonthReceiptAssignments);
 paymentForm.addEventListener("submit", savePayment);
 
 document.querySelectorAll(".sidebar a").forEach((link) => {
@@ -141,6 +142,7 @@ async function savePayment(event) {
     amount: Number(document.querySelector("#paymentAmount").value),
     coveredMonths,
     receiptUrl: document.querySelector("#receiptUrl").value.trim(),
+    useMainReceiptForMonths: document.querySelector("#useMainReceiptForMonths").checked,
     monthReceipts: collectMonthReceiptUrls(),
     note: document.querySelector("#paymentNote").value.trim()
   };
@@ -250,10 +252,16 @@ function renderMonths(months) {
 function renderMonthReceiptAssignments() {
   const container = document.querySelector("#monthReceiptAssignments");
   const selectedMonths = Array.from(document.querySelector("#coveredMonths").selectedOptions).map((option) => option.value);
+  const useMainReceipt = document.querySelector("#useMainReceiptForMonths").checked;
   container.innerHTML = "";
 
   if (!selectedMonths.length) {
     container.innerHTML = `<p class="muted">Selecciona uno o mas meses para asociar comprobantes.</p>`;
+    return;
+  }
+
+  if (useMainReceipt) {
+    container.innerHTML = `<p class="muted">El comprobante principal se vinculara automaticamente a ${selectedMonths.length} mes(es) seleccionado(s).</p>`;
     return;
   }
 

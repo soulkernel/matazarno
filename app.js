@@ -11,46 +11,7 @@ const CONFIG = {
 };
 
 const state = {
-  payments: [
-    {
-      id: "inicial-8729228",
-      paymentDate: "2026-03-20",
-      receiptNumber: "8729228",
-      amount: 150,
-      coveredMonths: ["2026-03"],
-      receiptUrl: "Comprobantes%20Pagos/2026-03-20%20at%203.19.16%20PM.jpeg",
-      monthReceipts: {
-        "2026-03": "Comprobantes%20Pagos/2026-03-20%20at%203.19.16%20PM.jpeg"
-      },
-      note: ""
-    },
-    {
-      id: "inicial-3630119",
-      paymentDate: "2026-05-06",
-      receiptNumber: "3630119",
-      amount: 300,
-      coveredMonths: ["2026-02", "2026-04"],
-      receiptUrl: "Comprobantes%20Pagos/2026-05-06%20at%203.48.01%20PM.jpeg",
-      monthReceipts: {
-        "2026-02": "Comprobantes%20Pagos/2026-05-06%20at%203.48.01%20PM.jpeg",
-        "2026-04": "Comprobantes%20Pagos/2026-05-06%20at%203.48.01%20PM.jpeg"
-      },
-      note: "Pago aplicado a meses vencidos."
-    },
-    {
-      id: "inicial-9609690",
-      paymentDate: "2026-07-03",
-      receiptNumber: "9609690",
-      amount: 300,
-      coveredMonths: ["2026-05", "2026-06"],
-      receiptUrl: "Comprobantes%20Pagos/2026-07-03%20at%2010.34.07%20AM.jpeg",
-      monthReceipts: {
-        "2026-05": "Comprobantes%20Pagos/2026-07-03%20at%2010.34.07%20AM.jpeg",
-        "2026-06": "Comprobantes%20Pagos/2026-07-03%20at%2010.34.07%20AM.jpeg"
-      },
-      note: "Pago aplicado a meses vencidos."
-    }
-  ],
+  payments: [],
   loadedFromServer: false
 };
 
@@ -254,7 +215,7 @@ function render() {
   const first = enriched[0];
   const last = enriched[enriched.length - 1];
   document.querySelector("#contractRange").textContent = `${monthNames[first.monthIndex]} ${first.year} - ${monthNames[last.monthIndex]} ${last.year} - Canon mensual ${money(CONFIG.monthlyRent)}`;
-  document.querySelector("#lastSync").textContent = state.loadedFromServer ? "Conectado a Google Sheets" : "Modo local con datos iniciales";
+  document.querySelector("#lastSync").textContent = state.loadedFromServer ? "Conectado a Google Sheets" : "Sin conexion a Google Sheets";
 
   renderMonths(enriched);
   renderPayments();

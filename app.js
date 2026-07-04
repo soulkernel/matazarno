@@ -68,7 +68,6 @@ document.querySelector("#lockFormButton").addEventListener("click", () => {
 document.querySelector("#refreshButton").addEventListener("click", loadData);
 document.querySelector("#downloadHistoryPdfButton").addEventListener("click", downloadPaymentsPdf);
 document.querySelector("#downloadHistoryCsvButton").addEventListener("click", downloadPaymentsCsv);
-document.querySelector("#coveredMonths").addEventListener("change", renderMonthReceiptAssignments);
 document.querySelector("#useMainReceiptForMonths").addEventListener("change", renderMonthReceiptAssignments);
 paymentForm.addEventListener("submit", savePayment);
 
@@ -128,7 +127,7 @@ async function loadData() {
 async function savePayment(event) {
   event.preventDefault();
   const file = document.querySelector("#receiptFile").files[0];
-  const coveredMonths = Array.from(document.querySelector("#coveredMonths").selectedOptions).map((option) => option.value);
+  const coveredMonths = getSelectedCoveredMonths();
 
   if (!coveredMonths.length) {
     setStatus("Selecciona al menos un mes cubierto.");
@@ -251,7 +250,7 @@ function renderMonths(months) {
 
 function renderMonthReceiptAssignments() {
   const container = document.querySelector("#monthReceiptAssignments");
-  const selectedMonths = Array.from(document.querySelector("#coveredMonths").selectedOptions).map((option) => option.value);
+  const selectedMonths = getSelectedCoveredMonths();
   const useMainReceipt = document.querySelector("#useMainReceiptForMonths").checked;
   container.innerHTML = "";
 
@@ -533,15 +532,23 @@ function pdfText(text) {
 }
 
 function populateMonthSelect() {
-  const select = document.querySelector("#coveredMonths");
-  select.innerHTML = "";
+  const container = document.querySelector("#coveredMonths");
+  container.innerHTML = "";
   buildContractMonths().forEach((month) => {
-    const option = document.createElement("option");
-    option.value = month.key;
-    option.textContent = `${monthNames[month.monthIndex]} ${month.year}`;
-    select.appendChild(option);
+    const label = document.createElement("label");
+    label.className = "month-choice";
+    label.innerHTML = `
+      <input type="checkbox" value="${month.key}">
+      <span>${monthNames[month.monthIndex]} ${month.year}</span>
+    `;
+    label.querySelector("input").addEventListener("change", renderMonthReceiptAssignments);
+    container.appendChild(label);
   });
   renderMonthReceiptAssignments();
+}
+
+function getSelectedCoveredMonths() {
+  return Array.from(document.querySelectorAll("#coveredMonths input:checked")).map((input) => input.value);
 }
 
 function buildContractMonths() {

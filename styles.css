@@ -129,6 +129,14 @@ label {
   gap: 7px;
 }
 
+.field-group {
+  color: var(--muted);
+  display: grid;
+  font-size: 0.88rem;
+  font-weight: 700;
+  gap: 10px;
+}
+
 input,
 select,
 textarea {
@@ -143,6 +151,38 @@ textarea {
 
 select[multiple] {
   min-height: 166px;
+}
+
+.month-choice-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(130px, 1fr));
+}
+
+.month-choice {
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  font-size: 0.9rem;
+  font-weight: 800;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 12px;
+}
+
+.month-choice:has(input:checked) {
+  background: #e7f5ee;
+  border-color: var(--paid);
+  box-shadow: inset 4px 0 0 var(--paid);
+}
+
+.month-choice input {
+  min-height: auto;
+  width: auto;
 }
 
 textarea {
@@ -529,7 +569,8 @@ td a {
   }
 
   .summary-grid,
-  .month-grid {
+  .month-grid,
+  .month-choice-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
@@ -546,6 +587,7 @@ td a {
 
   .summary-grid,
   .month-grid,
+  .month-choice-grid,
   .form-grid,
   .month-receipt-row,
   .sidebar nav {

@@ -252,6 +252,7 @@ function renderMonthReceiptAssignments() {
   const container = document.querySelector("#monthReceiptAssignments");
   const selectedMonths = getSelectedCoveredMonths();
   const useMainReceipt = document.querySelector("#useMainReceiptForMonths").checked;
+  renderSelectedMonthsSummary(selectedMonths);
   container.innerHTML = "";
 
   if (!selectedMonths.length) {
@@ -260,7 +261,12 @@ function renderMonthReceiptAssignments() {
   }
 
   if (useMainReceipt) {
-    container.innerHTML = `<p class="muted">El comprobante principal se vinculara automaticamente a ${selectedMonths.length} mes(es) seleccionado(s).</p>`;
+    container.innerHTML = `
+      <div class="receipt-impact">
+        <strong>Este comprobante afectara estos meses:</strong>
+        <div class="selected-months-list">${selectedMonths.map((monthKey) => `<span>${formatMonthKey(monthKey)}</span>`).join("")}</div>
+      </div>
+    `;
     return;
   }
 
@@ -549,6 +555,19 @@ function populateMonthSelect() {
 
 function getSelectedCoveredMonths() {
   return Array.from(document.querySelectorAll("#coveredMonths input:checked")).map((input) => input.value);
+}
+
+function renderSelectedMonthsSummary(selectedMonths) {
+  const container = document.querySelector("#selectedCoveredMonthsSummary");
+  if (!selectedMonths.length) {
+    container.innerHTML = `<span class="muted">No hay meses seleccionados.</span>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <strong>Meses afectados por este pago:</strong>
+    <div class="selected-months-list">${selectedMonths.map((monthKey) => `<span>${formatMonthKey(monthKey)}</span>`).join("")}</div>
+  `;
 }
 
 function buildContractMonths() {

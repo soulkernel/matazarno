@@ -12,6 +12,7 @@ const CONFIG = {
 
 const state = {
   payments: [],
+  allocations: [],
   loadedFromServer: false
 };
 
@@ -116,6 +117,7 @@ async function loadData() {
     if (!response.ok) throw new Error("No se pudo leer Google Sheets.");
     const payload = await response.json();
     state.payments = payload.payments || [];
+    state.allocations = payload.allocations || [];
     state.loadedFromServer = true;
     render();
     setStatus("Datos actualizados.");
@@ -171,9 +173,11 @@ async function savePayment(event) {
       if (!response.ok) throw new Error("No se pudo guardar en Google Sheets.");
       const saved = await response.json();
       state.payments.unshift(saved.payment || payment);
+      state.allocations = buildPaymentAllocations(state.allocations, saved.payment || payment);
       state.loadedFromServer = true;
     } else {
       state.payments.unshift(payment);
+      state.allocations = buildPaymentAllocations(state.allocations, payment);
       state.loadedFromServer = false;
     }
 
@@ -590,6 +594,15 @@ function buildContractMonths() {
 }
 
 function buildAllocations() {
+  if (state.allocations.length) {
+    return state.allocations.reduce((map, allocation) => {
+      const month = String(allocation.month || "").trim();
+      if (!month) return map;
+      map[month] = (map[month] || 0) + Number(allocation.amount || 0);
+      return map;
+    }, {});
+  }
+
   return state.payments.reduce((map, payment) => {
     const months = payment.coveredMonths || [];
     if (!months.length) return map;
@@ -599,6 +612,18 @@ function buildAllocations() {
     });
     return map;
   }, {});
+}
+
+function buildPaymentAllocations(existingAllocations, payment) {
+  const months = payment.coveredMonths || [];
+  if (!months.length) return existingAllocations;
+  const amountPerMonth = Number(payment.amount || 0) / months.length;
+  const paymentId = payment.id || "";
+  const withoutPayment = existingAllocations.filter((allocation) => allocation.paymentId !== paymentId);
+  return [
+    ...months.map((month) => ({ paymentId, month, amount: amountPerMonth })),
+    ...withoutPayment
+  ];
 }
 
 function getMonthReceiptUrls(monthKey) {

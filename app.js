@@ -596,7 +596,7 @@ function buildContractMonths() {
 function buildAllocations() {
   if (state.allocations.length) {
     return state.allocations.reduce((map, allocation) => {
-      const month = String(allocation.month || "").trim();
+      const month = normalizeMonthKey(allocation.month);
       if (!month) return map;
       map[month] = (map[month] || 0) + Number(allocation.amount || 0);
       return map;
@@ -604,7 +604,7 @@ function buildAllocations() {
   }
 
   return state.payments.reduce((map, payment) => {
-    const months = payment.coveredMonths || [];
+    const months = (payment.coveredMonths || []).map(normalizeMonthKey).filter(Boolean);
     if (!months.length) return map;
     const splitAmount = Number(payment.amount || 0) / months.length;
     months.forEach((month) => {
@@ -615,7 +615,7 @@ function buildAllocations() {
 }
 
 function buildPaymentAllocations(existingAllocations, payment) {
-  const months = payment.coveredMonths || [];
+  const months = (payment.coveredMonths || []).map(normalizeMonthKey).filter(Boolean);
   if (!months.length) return existingAllocations;
   const amountPerMonth = Number(payment.amount || 0) / months.length;
   const paymentId = payment.id || "";
@@ -628,7 +628,7 @@ function buildPaymentAllocations(existingAllocations, payment) {
 
 function getMonthReceiptUrls(monthKey) {
   return state.payments
-    .filter((payment) => (payment.coveredMonths || []).includes(monthKey))
+    .filter((payment) => (payment.coveredMonths || []).map(normalizeMonthKey).includes(monthKey))
     .map((payment) => (payment.monthReceipts && payment.monthReceipts[monthKey]) || payment.receiptUrl || "")
     .filter(Boolean);
 }
@@ -709,8 +709,22 @@ function toIsoDate(value) {
 }
 
 function formatMonthKey(key) {
-  const [year, month] = key.split("-").map(Number);
+  const [year, month] = normalizeMonthKey(key).split("-").map(Number);
   return `${monthNames[month - 1]} ${year}`;
+}
+
+function normalizeMonthKey(value) {
+  if (!value) return "";
+  const text = String(value).trim();
+  const direct = text.match(/^(\d{4})-(\d{2})/);
+  if (direct) return `${direct[1]}-${direct[2]}`;
+
+  const parsed = new Date(text);
+  if (!Number.isNaN(parsed.getTime())) {
+    return `${parsed.getFullYear()}-${String(parsed.getMonth() + 1).padStart(2, "0")}`;
+  }
+
+  return text;
 }
 
 function normalizeStatus(status) {

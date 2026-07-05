@@ -316,19 +316,23 @@ function renderPayments() {
 function downloadPaymentsPdf() {
   const ordered = [...state.payments].sort((a, b) => String(a.paymentDate).localeCompare(String(b.paymentDate)));
   const generatedAt = new Date();
-  const rows = ordered.map((payment) => [
-    formatDate(payment.paymentDate),
-    payment.receiptNumber || "",
-    money(Number(payment.amount || 0)),
-    (payment.coveredMonths || []).map(formatMonthKey).join(", "),
-    formatReceiptLinks(payment),
-    payment.note || ""
-  ]);
+  const rows = ordered.map((payment) => {
+    const coveredMonths = payment.coveredMonths || [];
+    const appliedPerMonth = coveredMonths.length ? Number(payment.amount || 0) / coveredMonths.length : 0;
+    return [
+      formatDate(payment.paymentDate),
+      payment.receiptNumber || "",
+      money(Number(payment.amount || 0)),
+      (payment.coveredMonths || []).map(formatMonthKey).join(", "),
+      money(appliedPerMonth),
+      payment.note || ""
+    ];
+  });
 
   const pdf = buildPaymentsPdf({
     title: "Historial de pagos efectuados",
     subtitle: `Contrato Arrendamiento Terreno Matazarnos - generado ${formatDate(toIsoDate(generatedAt))}`,
-    headers: ["Fecha", "Comprobante", "Valor", "Meses cubiertos", "Enlace comprobante", "Observacion"],
+    headers: ["Fecha", "Comprobante", "Valor transferido", "Meses cubiertos", "Aplicado por mes", "Observacion"],
     rows
   });
 
@@ -374,7 +378,7 @@ function buildPaymentsPdf({ title, subtitle, headers, rows }) {
   const headerHeight = 22;
   const tableTop = 500;
   const footerY = 24;
-  const colWidths = [66, 82, 74, 190, 190, 172];
+  const colWidths = [66, 82, 92, 210, 98, 226];
   const pages = [];
   let currentRows = [];
   let y = tableTop - headerHeight;
